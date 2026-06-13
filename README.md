@@ -5,7 +5,8 @@ An AI-powered Q&A system that answers Python questions for data science learners
 
 Built as a retrieval-augmented generation (RAG) pipeline behind a FastAPI service.
 
-> **Live demo:** _TBD — add deployed URL here_
+> **Live demo:** https://analyticsvidhya-production.up.railway.app/api/health
+> (try `POST /api/ask` — see [API usage](#endpoints) below)
 
 ---
 
@@ -179,18 +180,13 @@ latency, and a quality observation.
 
 ## Deployment
 
-_TBD — deploy to Render / Hugging Face Spaces / Railway and add the live URL above._
+**Live on Railway:** https://analyticsvidhya-production.up.railway.app
 
-The service is a single stateless FastAPI app; it depends on managed Qdrant + Redis and the
-OpenAI/Cohere APIs, so it deploys as one container/web service.
+The service is a single **stateless** FastAPI app — it queries managed Qdrant Cloud and the
+OpenAI/Cohere APIs, so it deploys as one web service (a `Procfile` defines the start command).
+Redis is optional; the live instance runs cache-less. Env vars are set in the platform dashboard
+(see [`.env.example`](.env.example)).
+
+> Note: free-tier instances may cold-start (first request after idle takes a few seconds).
 
 ---
-
-## Design notes & scaling
-
-- **Why a curated subset?** The full dataset is millions of low-signal rows; filtering to high-score,
-  accepted-answer Q&A improves retrieval quality *and* keeps cost/latency down. The architecture
-  (server vector DB, hybrid search, reranking) scales to the full corpus by raising `--max-docs`.
-- **Scaling to 100+ concurrent users:** the app is fully async; answer caching (Redis) absorbs
-  repeat load; embeddings/rerank are batched; the vector DB and LLM calls are the horizontal
-  scaling points. See the slide deck for details.
