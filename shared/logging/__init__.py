@@ -162,10 +162,6 @@ def configure_logging() -> None:
     root.addHandler(json_handler)
 
     # Logtail (optional)
-    if settings.LOGTAIL_TOKEN:
-      lt_handler = _build_logtail_handler(settings.LOGTAIL_TOKEN)
-      if lt_handler:
-        root.addHandler(lt_handler)
 
   # Silence noisy libraries
   logging.getLogger("sqlalchemy.engine").setLevel(
